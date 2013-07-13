@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -83,6 +84,8 @@ public class MainActivity extends Activity {
         editor.commit();
 
         setAlarm(hours, minutes);
+
+        Toast.makeText(this, R.string.timer_started, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -92,14 +95,15 @@ public class MainActivity extends Activity {
      * @param minutes The number of minutes
      */
     private void setAlarm(int hours, int minutes) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, hours);
         calendar.add(Calendar.MINUTE, minutes);
 
         PendingIntent intent =
                 PendingIntent.getBroadcast(this, 0, new Intent(this, PauseSongReceiver.class), PendingIntent.FLAG_ONE_SHOT);
+
+        // NOTE: If an alarm has already been set by this activity, this will replace it
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), intent);
     }
 
