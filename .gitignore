@@ -1,0 +1,14 @@
+# Borrowed from http://th4t.net/android-studio-gitignore.html
+
+*.iml
+*.iws
+*.ipr
+.idea/
+.gradle/
+local.properties
+
+SleepTimer/build/
+
+*~
+*.swp
+.DS_Store
