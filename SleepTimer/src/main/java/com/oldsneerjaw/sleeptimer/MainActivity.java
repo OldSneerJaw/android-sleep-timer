@@ -73,11 +73,12 @@ public class MainActivity extends Activity {
      */
     public void startTimer(View view) {
 
-        Log.d(MainActivity.class.getName(), "Starting countdown timer");
+        Log.d(MainActivity.class.getName(), "Starting sleep timer");
 
         int hours = timePicker.getCurrentHour();
         int minutes = timePicker.getCurrentMinute();
 
+        // The current values should become the new defaults
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putInt(HOUR_KEY, hours);
         editor.putInt(MINUTE_KEY, minutes);
@@ -105,6 +106,30 @@ public class MainActivity extends Activity {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), intent);
+    }
+
+    /**
+     * Cancels the countdown timer.
+     *
+     * @param view The view that triggered this action
+     */
+    public void cancelTimer(View view) {
+        Log.d(MainActivity.class.getName(), "Cancelling sleep timer");
+
+        cancelAlarm();
+
+        Toast.makeText(this, R.string.timer_cancelled, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Cancels the alarm.
+     */
+    private void cancelAlarm() {
+        PendingIntent intent =
+                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseSongReceiver.class), PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(intent);
     }
 
 }
