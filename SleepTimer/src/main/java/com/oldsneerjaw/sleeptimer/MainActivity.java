@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
      */
     public void startTimer(View view) {
 
-        Log.i(MainActivity.class.getName(), "Starting countdown timer");
+        Log.d(MainActivity.class.getName(), "Starting countdown timer");
 
         int hours = timePicker.getCurrentHour();
         int minutes = timePicker.getCurrentMinute();
@@ -99,10 +99,10 @@ public class MainActivity extends Activity {
         calendar.add(Calendar.HOUR, hours);
         calendar.add(Calendar.MINUTE, minutes);
 
+        // NOTE: If an alarm has already been set by this activity, this will automatically replace it
         PendingIntent intent =
                 PendingIntent.getBroadcast(this, 0, new Intent(this, PauseSongReceiver.class), PendingIntent.FLAG_ONE_SHOT);
 
-        // NOTE: If an alarm has already been set by this activity, this will replace it
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), intent);
     }

@@ -35,9 +35,9 @@ public class PauseSongReceiver extends BroadcastReceiver {
         int audioFocusResult = audioManager.requestAudioFocus(listener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
         if (audioFocusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            Log.i(PauseSongReceiver.class.getName(), "Audio focus GAINED");
+            Log.d(PauseSongReceiver.class.getName(), "Audio focus GAINED");
         } else {
-            Log.i(PauseSongReceiver.class.getName(), "Audio focus DENIED");
+            Log.d(PauseSongReceiver.class.getName(), "Audio focus DENIED");
         }
     }
 
@@ -48,18 +48,17 @@ public class PauseSongReceiver extends BroadcastReceiver {
         @Override
         public void onAudioFocusChange(int focusChange) {
 
-
             switch (focusChange) {
                 case AudioManager.AUDIOFOCUS_GAIN:
-                    Log.i(PauseSongReceiver.class.getName(), "Audio focus REGAINED");
+                    Log.d(PauseSongReceiver.class.getName(), "Audio focus REGAINED");
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS:
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                    Log.i(PauseSongReceiver.class.getName(), "Audio focus LOST");
+                    Log.d(PauseSongReceiver.class.getName(), "Audio focus LOST");
                     break;
                 default:
-                    Log.i(PauseSongReceiver.class.getName(), "Audio focus changed: " + focusChange);
+                    Log.d(PauseSongReceiver.class.getName(), "Audio focus changed: " + focusChange);
             }
         }
     }
