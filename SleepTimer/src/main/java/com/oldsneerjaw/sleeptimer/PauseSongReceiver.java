@@ -25,7 +25,10 @@ public class PauseSongReceiver extends BroadcastReceiver {
         }
     }
 
-    private class AudioFocusListener implements AudioManager.OnAudioFocusChangeListener {
+    /**
+     * Listens for audio focus change events.
+     */
+    private static class AudioFocusListener implements AudioManager.OnAudioFocusChangeListener {
         @Override
         public void onAudioFocusChange(int focusChange) {
 
