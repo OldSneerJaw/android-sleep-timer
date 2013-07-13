@@ -29,6 +29,11 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    /**
+     * Starts a countdown timer based on the current settings.
+     *
+     * @param view The view that triggered this action
+     */
     public void startTimer(View view) {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
