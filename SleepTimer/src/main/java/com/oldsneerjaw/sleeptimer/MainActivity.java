@@ -126,7 +126,7 @@ public class MainActivity extends Activity {
      */
     private void cancelAlarm() {
         PendingIntent intent =
-                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseSongReceiver.class), PendingIntent.FLAG_ONE_SHOT);
+                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseSongReceiver.class), 0);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(intent);
