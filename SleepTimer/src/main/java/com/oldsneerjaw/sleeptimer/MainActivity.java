@@ -102,7 +102,7 @@ public class MainActivity extends Activity {
 
         // NOTE: If an alarm has already been set by this activity, this will automatically replace it
         PendingIntent intent =
-                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseSongReceiver.class), PendingIntent.FLAG_ONE_SHOT);
+                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseSongReceiver.class), 0);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), intent);
