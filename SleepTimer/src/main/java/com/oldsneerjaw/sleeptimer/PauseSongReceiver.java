@@ -30,14 +30,19 @@ public class PauseSongReceiver extends BroadcastReceiver {
 
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
-        // A well-behaved media player should relinquish audio focus (i.e. pause playback) when another app requests focus
+        // A well-behaved media player should relinquish audio focus (i.e. pause playback) when another app requests
+        // focus: http://developer.android.com/training/managing-audio/audio-focus.html#HandleFocusLoss
         AudioFocusListener listener = new AudioFocusListener();
         int audioFocusResult = audioManager.requestAudioFocus(listener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
         if (audioFocusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             Log.d(PauseSongReceiver.class.getName(), "Audio focus GAINED");
+
+            // Immediately release focus. If the previous owner is well behaved, it will remain paused indefinitely;
+            // if not, then holding onto audio focus will only briefly delay it from resuming playback
+            audioManager.abandonAudioFocus(listener);
         } else {
-            Log.d(PauseSongReceiver.class.getName(), "Audio focus DENIED");
+            Log.e(PauseSongReceiver.class.getName(), "Audio focus DENIED");
         }
     }
 
