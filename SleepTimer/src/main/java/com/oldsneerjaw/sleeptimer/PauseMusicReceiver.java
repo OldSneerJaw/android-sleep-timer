@@ -29,10 +29,12 @@ import android.util.Log;
  */
 public class PauseMusicReceiver extends BroadcastReceiver {
 
+    private AudioManager audioManager;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
         // A well-behaved media player should relinquish audio focus (i.e. pause playback) when another app requests
         // focus: http://developer.android.com/training/managing-audio/audio-focus.html#HandleFocusLoss
@@ -53,7 +55,7 @@ public class PauseMusicReceiver extends BroadcastReceiver {
     /**
      * Listens for audio focus change events.
      */
-    private static class AudioFocusListener implements AudioManager.OnAudioFocusChangeListener {
+    private class AudioFocusListener implements AudioManager.OnAudioFocusChangeListener {
         @Override
         public void onAudioFocusChange(int focusChange) {
 
@@ -62,9 +64,12 @@ public class PauseMusicReceiver extends BroadcastReceiver {
                     Log.d(PauseMusicReceiver.class.getName(), "Audio focus REGAINED");
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS:
+                    Log.d(PauseMusicReceiver.class.getName(), "Audio focus LOST permanently");
+                    audioManager.abandonAudioFocus(this);
+                    break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                    Log.d(PauseMusicReceiver.class.getName(), "Audio focus LOST");
+                    Log.d(PauseMusicReceiver.class.getName(), "Audio focus LOST temporarily");
                     break;
                 default:
                     Log.d(PauseMusicReceiver.class.getName(), "Audio focus changed: " + focusChange);
