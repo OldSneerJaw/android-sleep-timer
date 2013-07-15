@@ -27,20 +27,30 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.TimePicker;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
 
-// TODO Document this class
+/**
+ * Launches music sleep timers.
+ *
+ * @author Joel Andrews
+ */
 public class MainActivity extends Activity {
 
     private static final String HOUR_KEY = MainActivity.class.getName() + ".hours";
-    private static final String MINUTE_KEY = MainActivity.class.getName() + ".minutes";
     private static final int DEFAULT_HOURS = 1;
-    private static final int DEFAULT_MINUTES = 0;
+    private static final int MIN_HOURS = 0;
+    private static final int MAX_HOURS = 9;
 
-    private TimePicker timePicker;
+    private static final String MINUTE_KEY = MainActivity.class.getName() + ".minutes";
+    private static final int DEFAULT_MINUTES = 0;
+    private static final int MIN_MINUTES = 0;
+    private static final int MAX_MINUTES = 59;
+
+    private NumberPicker hoursPicker;
+    private NumberPicker minutesPicker;
 
     private SharedPreferences sharedPrefs;
 
@@ -50,14 +60,18 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        timePicker = (TimePicker) findViewById(R.id.time_picker);
-        timePicker.setIs24HourView(true);
-
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        timePicker.setCurrentHour(sharedPrefs.getInt(HOUR_KEY, DEFAULT_HOURS));
-        timePicker.setCurrentMinute(sharedPrefs.getInt(MINUTE_KEY, DEFAULT_MINUTES));
-    }
 
+        hoursPicker = (NumberPicker) findViewById(R.id.hours_picker);
+        hoursPicker.setMinValue(MIN_HOURS);
+        hoursPicker.setMaxValue(MAX_HOURS);
+        hoursPicker.setValue(sharedPrefs.getInt(HOUR_KEY, DEFAULT_HOURS));
+
+        minutesPicker = (NumberPicker) findViewById(R.id.minutes_picker);
+        minutesPicker.setMinValue(MIN_MINUTES);
+        minutesPicker.setMaxValue(MAX_MINUTES);
+        minutesPicker.setValue(sharedPrefs.getInt(MINUTE_KEY, DEFAULT_MINUTES));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,18 +89,28 @@ public class MainActivity extends Activity {
 
         Log.d(MainActivity.class.getName(), "Starting sleep timer");
 
-        int hours = timePicker.getCurrentHour();
-        int minutes = timePicker.getCurrentMinute();
+        int hours = hoursPicker.getValue();
+        int minutes = minutesPicker.getValue();
 
         // The current values should become the new defaults
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putInt(HOUR_KEY, hours);
-        editor.putInt(MINUTE_KEY, minutes);
-        editor.commit();
+        setDefaultTimerLength(hours, minutes);
 
         setAlarm(hours, minutes);
 
         Toast.makeText(this, R.string.timer_started, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Sets the default timer length.
+     *
+     * @param hours The number of hours
+     * @param minutes The number of minutes
+     */
+    private void setDefaultTimerLength(int hours, int minutes) {
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putInt(HOUR_KEY, hours);
+        editor.putInt(MINUTE_KEY, minutes);
+        editor.commit();
     }
 
     /**
@@ -101,8 +125,7 @@ public class MainActivity extends Activity {
         calendar.add(Calendar.MINUTE, minutes);
 
         // NOTE: If an alarm has already been set by this activity, this will automatically replace it
-        PendingIntent intent =
-                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseSongReceiver.class), 0);
+        PendingIntent intent = getBroadcastIntent();
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), intent);
@@ -125,11 +148,19 @@ public class MainActivity extends Activity {
      * Cancels the alarm.
      */
     private void cancelAlarm() {
-        PendingIntent intent =
-                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseSongReceiver.class), 0);
+        PendingIntent intent = getBroadcastIntent();
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(intent);
+    }
+
+    /**
+     * Returns a {@link PendingIntent} that can be used to broadcast a pause music event.
+     *
+     * @return A {@link PendingIntent}
+     */
+    private PendingIntent getBroadcastIntent() {
+        return PendingIntent.getBroadcast(this, 0, new Intent(this, PauseMusicReceiver.class), 0);
     }
 
 }
