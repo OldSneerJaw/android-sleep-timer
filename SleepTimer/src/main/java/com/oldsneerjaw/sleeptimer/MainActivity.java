@@ -32,7 +32,11 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-// TODO Document this class
+/**
+ * Launches music sleep timers.
+ *
+ * @author Joel Andrews
+ */
 public class MainActivity extends Activity {
 
     private static final String HOUR_KEY = MainActivity.class.getName() + ".hours";
@@ -102,7 +106,7 @@ public class MainActivity extends Activity {
 
         // NOTE: If an alarm has already been set by this activity, this will automatically replace it
         PendingIntent intent =
-                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseSongReceiver.class), 0);
+                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseMusicReceiver.class), 0);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), intent);
@@ -126,7 +130,7 @@ public class MainActivity extends Activity {
      */
     private void cancelAlarm() {
         PendingIntent intent =
-                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseSongReceiver.class), 0);
+                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseMusicReceiver.class), 0);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(intent);
