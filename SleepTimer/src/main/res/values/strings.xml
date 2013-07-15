@@ -10,5 +10,7 @@
     <string name="timer_cancelled">Sleep timer cancelled</string>
     <string name="hours_label">h</string>
     <string name="minutes_label">m</string>
+    <string name="paused_music_notification_title">Sleep Timer - Music stopped</string>
+    <string name="paused_music_notification_text">Good night!</string>
 
 </resources>

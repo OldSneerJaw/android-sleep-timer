@@ -47,6 +47,9 @@ public class PauseMusicReceiver extends BroadcastReceiver {
             // Immediately release focus. If the previous owner is well behaved, it will remain paused indefinitely;
             // if not, then holding onto audio focus will only briefly delay it from resuming playback
             audioManager.abandonAudioFocus(listener);
+
+            PauseMusicNotifier notifier = new PauseMusicNotifier();
+            notifier.notify(context);
         } else {
             Log.e(PauseMusicReceiver.class.getName(), "Audio focus DENIED");
         }
