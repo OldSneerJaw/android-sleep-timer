@@ -105,8 +105,7 @@ public class MainActivity extends Activity {
         calendar.add(Calendar.MINUTE, minutes);
 
         // NOTE: If an alarm has already been set by this activity, this will automatically replace it
-        PendingIntent intent =
-                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseMusicReceiver.class), 0);
+        PendingIntent intent = getBroadcastIntent();
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), intent);
@@ -129,11 +128,19 @@ public class MainActivity extends Activity {
      * Cancels the alarm.
      */
     private void cancelAlarm() {
-        PendingIntent intent =
-                PendingIntent.getBroadcast(this, 0, new Intent(this, PauseMusicReceiver.class), 0);
+        PendingIntent intent = getBroadcastIntent();
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(intent);
+    }
+
+    /**
+     * Returns a {@link PendingIntent} that can be used to broadcast a pause music event.
+     *
+     * @return A {@link PendingIntent}
+     */
+    private PendingIntent getBroadcastIntent() {
+        return PendingIntent.getBroadcast(this, 0, new Intent(this, PauseMusicReceiver.class), 0);
     }
 
 }
