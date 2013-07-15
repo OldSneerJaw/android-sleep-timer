@@ -22,8 +22,12 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.util.Log;
 
-// TODO Document this class
-public class PauseSongReceiver extends BroadcastReceiver {
+/**
+ * Receives broadcast events intended to pause current audio playback.
+ *
+ * @author Joel Andrews
+ */
+public class PauseMusicReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -36,13 +40,13 @@ public class PauseSongReceiver extends BroadcastReceiver {
         int audioFocusResult = audioManager.requestAudioFocus(listener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
         if (audioFocusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            Log.d(PauseSongReceiver.class.getName(), "Audio focus GAINED");
+            Log.d(PauseMusicReceiver.class.getName(), "Audio focus GAINED");
 
             // Immediately release focus. If the previous owner is well behaved, it will remain paused indefinitely;
             // if not, then holding onto audio focus will only briefly delay it from resuming playback
             audioManager.abandonAudioFocus(listener);
         } else {
-            Log.e(PauseSongReceiver.class.getName(), "Audio focus DENIED");
+            Log.e(PauseMusicReceiver.class.getName(), "Audio focus DENIED");
         }
     }
 
@@ -55,15 +59,15 @@ public class PauseSongReceiver extends BroadcastReceiver {
 
             switch (focusChange) {
                 case AudioManager.AUDIOFOCUS_GAIN:
-                    Log.d(PauseSongReceiver.class.getName(), "Audio focus REGAINED");
+                    Log.d(PauseMusicReceiver.class.getName(), "Audio focus REGAINED");
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS:
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                    Log.d(PauseSongReceiver.class.getName(), "Audio focus LOST");
+                    Log.d(PauseMusicReceiver.class.getName(), "Audio focus LOST");
                     break;
                 default:
-                    Log.d(PauseSongReceiver.class.getName(), "Audio focus changed: " + focusChange);
+                    Log.d(PauseMusicReceiver.class.getName(), "Audio focus changed: " + focusChange);
             }
         }
     }
