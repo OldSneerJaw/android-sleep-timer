@@ -8,5 +8,7 @@
     <string name="cancel_timer_button_label">Cancel</string>
     <string name="timer_started">Sleep timer started</string>
     <string name="timer_cancelled">Sleep timer cancelled</string>
+    <string name="hours_label">h</string>
+    <string name="minutes_label">m</string>
 
 </resources>
