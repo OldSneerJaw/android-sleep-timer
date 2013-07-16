@@ -23,6 +23,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
@@ -56,6 +57,10 @@ public class SetTimerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_timer);
+
+        // Prevent the soft keyboard from appearing until explicitly launched by the user
+        // Source: http://stackoverflow.com/a/2059394
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
