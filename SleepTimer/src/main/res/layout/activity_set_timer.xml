@@ -13,62 +13,61 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical|center_horizontal"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".SetTimerActivity">
 
-    <TableLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <TableRow>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
+            <!--
+            NOTE: Lint mistakenly reports this LinearLayout as useless; however, it provides weight for the start button
+            in the next row to expand to the full width of the table. Using tools:ignore to suppress the warning for
+            this one instance. Source: http://tools.android.com/recent/ignoringlintwarnings
+             -->
 
-        <TableRow>
-            <LinearLayout
+            <NumberPicker
+                android:id="@+id/hours_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal|center_vertical"
-                android:orientation="horizontal">
+                android:textSize="@dimen/set_timer_hour_minute_unit_text_size"
+                android:text="@string/hours_label" />
 
-                <NumberPicker
-                    android:id="@+id/hours_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/set_timer_hour_minute_unit_text_size"
-                    android:text="@string/hours_label" />
+            <Space
+                android:layout_width="@dimen/set_timer_spacer_size"
+                android:layout_height="match_parent" />
 
-                <Space
-                    android:layout_width="@dimen/set_timer_spacer_size"
-                    android:layout_height="match_parent" />
-
-                <NumberPicker
-                    android:id="@+id/minutes_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/set_timer_hour_minute_unit_text_size"
-                    android:text="@string/minutes_label" />
-            </LinearLayout>
-        </TableRow>
-        <TableRow>
-            <Button
-                android:id="@+id/start_timer_button"
-                android:layout_width="match_parent"
+            <NumberPicker
+                android:id="@+id/minutes_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="startTimer"
-                android:text="@string/start_timer_button_label" />
-        </TableRow>
-    </TableLayout>
+                android:textSize="@dimen/set_timer_hour_minute_unit_text_size"
+                android:text="@string/minutes_label" />
+        </LinearLayout>
+    </TableRow>
+    <TableRow>
+        <Button
+            android:id="@+id/start_timer_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="startTimer"
+            android:text="@string/start_timer_button_label" >
 
-</LinearLayout>
+            <requestFocus />
+        </Button>
+    </TableRow>
+
+</TableLayout>

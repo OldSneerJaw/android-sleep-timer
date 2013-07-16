@@ -17,15 +17,7 @@ limitations under the License.
 package com.oldsneerjaw.sleeptimer;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.app.Activity;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.Menu;
-import android.view.View;
-import android.widget.NumberPicker;
-import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
