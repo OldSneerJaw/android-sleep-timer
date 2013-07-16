@@ -23,42 +23,77 @@ import android.media.AudioManager;
 import android.util.Log;
 
 /**
- * Receives broadcast events intended to pause current audio playback.
+ * Handles broadcast events intended to pause music playback indefinitely.
  *
  * @author Joel Andrews
  */
 public class PauseMusicReceiver extends BroadcastReceiver {
 
-    private AudioManager audioManager;
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        if (pauseMusicPlayback(context)) {
+            Log.i(PauseMusicReceiver.class.getName(), "Successfully paused music playback");
+
+            notify(context);
+        } else {
+            Log.e(PauseMusicReceiver.class.getName(), "Failed to pause music playback");
+        }
+
+        TimerManager.getInstance(context).cancelTimer();
+    }
+
+    /**
+     * Pauses all music playback on the device.
+     *
+     * @param context The context
+     *
+     * @return {@code true} if playback was successfully paused; otherwise, {@code false}
+     */
+    private boolean pauseMusicPlayback(Context context) {
+
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+        AudioFocusListener listener = new AudioFocusListener();
+        listener.audioManager = audioManager;
 
         // A well-behaved media player should relinquish audio focus (i.e. pause playback) when another app requests
         // focus: http://developer.android.com/training/managing-audio/audio-focus.html#HandleFocusLoss
-        AudioFocusListener listener = new AudioFocusListener();
         int audioFocusResult = audioManager.requestAudioFocus(listener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-
         if (audioFocusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             Log.d(PauseMusicReceiver.class.getName(), "Audio focus GAINED");
 
             // Immediately release focus. If the previous owner is well behaved, it will remain paused indefinitely;
-            // if not, then holding onto audio focus will only briefly delay it from resuming playback
+            // if not, then holding onto audio focus will only briefly delay it from resuming playback until this app
+            // is automatically recycled by the OS
             audioManager.abandonAudioFocus(listener);
 
-            PauseMusicNotifier notifier = new PauseMusicNotifier();
-            notifier.notify(context);
+            return true;
         } else {
-            Log.e(PauseMusicReceiver.class.getName(), "Audio focus DENIED");
+            Log.d(PauseMusicReceiver.class.getName(), "Audio focus DENIED");
+
+            return false;
         }
     }
 
     /**
-     * Listens for audio focus change events.
+     * Posts a status bar notification that music playback has been paused.
+     *
+     * @param context The context
+     */
+    private void notify(Context context) {
+        PauseMusicNotifier notifier = new PauseMusicNotifier();
+        notifier.notify(context);
+    }
+
+
+    /**
+     * A listener for audio focus change events.
      */
     private class AudioFocusListener implements AudioManager.OnAudioFocusChangeListener {
+
+        AudioManager audioManager;
+
         @Override
         public void onAudioFocusChange(int focusChange) {
 
@@ -69,10 +104,6 @@ public class PauseMusicReceiver extends BroadcastReceiver {
                 case AudioManager.AUDIOFOCUS_LOSS:
                     Log.d(PauseMusicReceiver.class.getName(), "Audio focus LOST permanently");
                     audioManager.abandonAudioFocus(this);
-                    break;
-                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                    Log.d(PauseMusicReceiver.class.getName(), "Audio focus LOST temporarily");
                     break;
                 default:
                     Log.d(PauseMusicReceiver.class.getName(), "Audio focus changed: " + focusChange);
