@@ -27,32 +27,21 @@ import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
- * The launching point for the sleep timer. Launches either {@link SetTimerActivity} or {@link CountdownActivity}
- * depending on whether the sleep timer is currently running.
+ * The launching point for the sleep timer.
  *
  * @author Joel Andrews
  */
 public class MainActivity extends Activity {
 
-    // TODO Move these into a common base class of SetTimerActivity and CountdownActivity
-    public static final int MIN_HOURS = 0;
-    public static final int MAX_HOURS = 9;
-    public static final int MIN_MINUTES = 0;
-    public static final int MAX_MINUTES = 59;
-
     @Override
     protected void onResume() {
         super.onResume();
 
-        Intent intent;
-        if (TimerManager.getInstance(this).getScheduledTime() != null) {
-            intent = new Intent(this, CountdownActivity.class);
-        } else {
-            intent = new Intent(this, SetTimerActivity.class);
-        }
-
-        startActivityForResult(intent, 0);
+        launchActivity();
     }
 
     @Override
@@ -67,5 +56,24 @@ public class MainActivity extends Activity {
             default:
                 throw new IllegalArgumentException("Argument resultCode must be be either RESULT_OK or RESULT_CANCELED");
         }
+    }
+
+    /**
+     * Launches the appropriate activity depending on whether the sleep timer is currently running
+     * ({@link CountdownActivity}) or not ({@link SetTimerActivity}).
+     */
+    private void launchActivity() {
+        Calendar calendarNow = Calendar.getInstance();
+        Date scheduledTime = TimerManager.getInstance(this).getScheduledTime();
+
+        Intent intent;
+        if (scheduledTime == null || scheduledTime.getTime() <= calendarNow.getTimeInMillis()) {
+            // If the scheduled time occurs in the past, we treat it as if the timer is no longer running
+            intent = new Intent(this, SetTimerActivity.class);
+        } else {
+            intent = new Intent(this, CountdownActivity.class);
+        }
+
+        startActivityForResult(intent, 0);
     }
 }
