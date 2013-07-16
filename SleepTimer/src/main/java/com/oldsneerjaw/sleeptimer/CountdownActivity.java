@@ -27,6 +27,8 @@ import java.util.Date;
 
 public class CountdownActivity extends Activity {
 
+    private static final String LOG_TAG = CountdownActivity.class.getName();
+
     private Date scheduledTime;
 
     @Override
@@ -52,7 +54,7 @@ public class CountdownActivity extends Activity {
      * @param view The view that triggered this action
      */
     public void stopTimer(View view) {
-        Log.d(MainActivity.class.getName(), "Canceling sleep timer");
+        Log.d(LOG_TAG, "Canceling sleep timer");
 
         TimerManager.getInstance(this).cancelTimer();
 
