@@ -132,16 +132,15 @@ public class TimerManager {
     /**
      * Returns the time that the timer is set to expire.
      *
-     * @return A {@link Date}, or null if no time is currently set
+     * @return A {@link Date}, or null if no timer is currently set
      */
     public Date getScheduledTime() {
+        if (!sharedPreferences.contains(SCHEDULED_TIME_KEY)) {
+            return null;
+        }
+
         long millis = sharedPreferences.getLong(SCHEDULED_TIME_KEY, Long.MIN_VALUE);
 
-        if (millis < Calendar.getInstance().getTimeInMillis()) {
-            // The time is set in the past; treat it as though nothing is scheduled
-            return null;
-        } else {
-            return new Date(millis);
-        }
+        return new Date(millis);
     }
 }
