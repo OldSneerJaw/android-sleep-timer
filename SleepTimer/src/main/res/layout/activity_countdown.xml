@@ -23,7 +23,7 @@ limitations under the License.
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity">
+    tools:context=".CountdownActivity">
 
     <TableLayout
         android:layout_width="wrap_content"
@@ -56,11 +56,11 @@ limitations under the License.
         </TableRow>
         <TableRow>
             <Button
-                android:id="@+id/start_timer_button"
+                android:id="@+id/cancel_timer_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="startTimer"
-                android:text="@string/start_timer_button_label" />
+                android:onClick="stopTimer"
+                android:text="@string/cancel_timer_button_label" />
         </TableRow>
     </TableLayout>
 

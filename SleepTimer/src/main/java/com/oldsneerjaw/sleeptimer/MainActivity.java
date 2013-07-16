@@ -16,10 +16,6 @@ limitations under the License.
 
 package com.oldsneerjaw.sleeptimer;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
@@ -29,8 +25,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.Toast;
-
-import java.util.Calendar;
 
 /**
  * Launches music sleep timers.
@@ -92,16 +86,16 @@ public class MainActivity extends Activity {
         int hours = hoursPicker.getValue();
         int minutes = minutesPicker.getValue();
 
-        // The current values should become the new defaults
+        // The currently selected values should become the new defaults
         setDefaultTimerLength(hours, minutes);
 
-        setAlarm(hours, minutes);
+        TimerManager.getInstance(this).setTimer(hours, minutes);
 
         Toast.makeText(this, R.string.timer_started, Toast.LENGTH_SHORT).show();
     }
 
     /**
-     * Sets the default timer length.
+     * Sets the default timer length to the specified number of hours and minutes.
      *
      * @param hours The number of hours
      * @param minutes The number of minutes
@@ -111,56 +105,6 @@ public class MainActivity extends Activity {
         editor.putInt(HOUR_KEY, hours);
         editor.putInt(MINUTE_KEY, minutes);
         editor.commit();
-    }
-
-    /**
-     * Sets an alarm for the given number of hours and minutes in the future to pause audio output.
-     *
-     * @param hours The number of hours
-     * @param minutes The number of minutes
-     */
-    private void setAlarm(int hours, int minutes) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR, hours);
-        calendar.add(Calendar.MINUTE, minutes);
-
-        // NOTE: If an alarm has already been set by this activity, this will automatically replace it
-        PendingIntent intent = getBroadcastIntent();
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), intent);
-    }
-
-    /**
-     * Cancels the countdown timer.
-     *
-     * @param view The view that triggered this action
-     */
-    public void cancelTimer(View view) {
-        Log.d(MainActivity.class.getName(), "Cancelling sleep timer");
-
-        cancelAlarm();
-
-        Toast.makeText(this, R.string.timer_cancelled, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Cancels the alarm.
-     */
-    private void cancelAlarm() {
-        PendingIntent intent = getBroadcastIntent();
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(intent);
-    }
-
-    /**
-     * Returns a {@link PendingIntent} that can be used to broadcast a pause music event.
-     *
-     * @return A {@link PendingIntent}
-     */
-    private PendingIntent getBroadcastIntent() {
-        return PendingIntent.getBroadcast(this, 0, new Intent(this, PauseMusicReceiver.class), 0);
     }
 
 }
