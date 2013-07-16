@@ -43,7 +43,13 @@ limitations under the License.
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/set_timer_hour_minute_unit_text_size"
                     android:text="@string/hours_label" />
+
+                <Space
+                    android:layout_width="@dimen/set_timer_spacer_size"
+                    android:layout_height="match_parent" />
+
                 <NumberPicker
                     android:id="@+id/minutes_picker"
                     android:layout_width="wrap_content"
@@ -51,6 +57,7 @@ limitations under the License.
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/set_timer_hour_minute_unit_text_size"
                     android:text="@string/minutes_label" />
             </LinearLayout>
         </TableRow>
