@@ -129,8 +129,6 @@ public class CountdownActivity extends Activity {
         @Override
         public void onFinish() {
             CountdownActivity.this.prepareReturnToSender();
-
-            return;
         }
     }
 }
