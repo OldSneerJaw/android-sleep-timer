@@ -11,6 +11,5 @@
     <string name="minutes_label">m</string>
     <string name="paused_music_notification_title">Sleep Timer - Music stopped</string>
     <string name="paused_music_notification_text">Good night!</string>
-    <string name="title_activity_countdown">Sleep Timer</string>
 
 </resources>

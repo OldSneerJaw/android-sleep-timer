@@ -59,6 +59,10 @@ public class CountdownActivity extends Activity {
         TimerManager.getInstance(this).cancelTimer();
 
         Toast.makeText(this, R.string.timer_cancelled, Toast.LENGTH_SHORT).show();
+
+        // Finish the activity
+        setResult(RESULT_OK);
+        finish();
     }
 
 }

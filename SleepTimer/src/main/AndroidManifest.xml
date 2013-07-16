@@ -27,7 +27,11 @@
 
         <activity
             android:name="com.oldsneerjaw.sleeptimer.CountdownActivity"
-            android:label="@string/title_activity_countdown" >
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.oldsneerjaw.sleeptimer.SetTimerActivity"
+            android:label="@string/app_name" >
         </activity>
     </application>
 
