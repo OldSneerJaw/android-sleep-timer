@@ -28,7 +28,8 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 /**
- * The launching point for the sleep timer.
+ * The launching point for the sleep timer. Launches either {@link SetTimerActivity} or {@link CountdownActivity}
+ * depending on whether the sleep timer is currently running.
  *
  * @author Joel Andrews
  */
@@ -61,6 +62,7 @@ public class MainActivity extends Activity {
                 break;
             case RESULT_CANCELED:
                 finish();
+
                 return;
             default:
                 throw new IllegalArgumentException("Argument resultCode must be be either RESULT_OK or RESULT_CANCELED");
