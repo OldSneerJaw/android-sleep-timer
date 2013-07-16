@@ -33,6 +33,8 @@ import android.widget.Toast;
  */
 public class MainActivity extends Activity {
 
+    private static final String LOG_TAG = MainActivity.class.getName();
+
     private static final String HOUR_KEY = MainActivity.class.getName() + ".hours";
     private static final int DEFAULT_HOURS = 1;
     private static final int MIN_HOURS = 0;
@@ -81,7 +83,7 @@ public class MainActivity extends Activity {
      */
     public void startTimer(View view) {
 
-        Log.d(MainActivity.class.getName(), "Starting sleep timer");
+        Log.d(LOG_TAG, "Starting sleep timer");
 
         int hours = hoursPicker.getValue();
         int minutes = minutesPicker.getValue();
