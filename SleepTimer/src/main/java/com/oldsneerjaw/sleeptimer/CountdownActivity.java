@@ -29,6 +29,11 @@ import android.widget.Toast;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Displays a dynamic countdown timer.
+ *
+ * @author Joel Andrews
+ */
 public class CountdownActivity extends Activity {
 
     private static final String LOG_TAG = CountdownActivity.class.getName();
@@ -59,6 +64,15 @@ public class CountdownActivity extends Activity {
         startTimer();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+    }
+
     /**
      * Initializes and starts the countdown timer.
      */
@@ -84,11 +98,13 @@ public class CountdownActivity extends Activity {
      * @param view The view that triggered this action
      */
     public void stopTimer(View view) {
-        Log.d(LOG_TAG, "Canceling sleep timer");
+        Log.d(LOG_TAG, "Sleep timer canceled by view " + view.getId());
 
         TimerManager.getInstance(this).cancelTimer();
 
-        countDownTimer.cancel();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
 
         Toast.makeText(this, R.string.timer_cancelled, Toast.LENGTH_SHORT).show();
 
