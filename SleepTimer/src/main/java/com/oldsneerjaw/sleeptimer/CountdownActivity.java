@@ -59,6 +59,15 @@ public class CountdownActivity extends Activity {
         startTimer();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+    }
+
     /**
      * Initializes and starts the countdown timer.
      */
@@ -88,7 +97,9 @@ public class CountdownActivity extends Activity {
 
         TimerManager.getInstance(this).cancelTimer();
 
-        countDownTimer.cancel();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
 
         Toast.makeText(this, R.string.timer_cancelled, Toast.LENGTH_SHORT).show();
 
