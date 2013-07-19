@@ -92,6 +92,11 @@ public class SetTimerActivity extends Activity {
 
         Log.d(LOG_TAG, "Sleep timer started by view " + view.getId());
 
+        // Explicitly clear focus from the number pickers to ensure that the stored values get updated.
+        // Source: http://stackoverflow.com/a/13409571
+        hoursPicker.clearFocus();
+        minutesPicker.clearFocus();
+
         int hours = hoursPicker.getValue();
         int minutes = minutesPicker.getValue();
 
