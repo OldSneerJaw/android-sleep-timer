@@ -90,7 +90,7 @@ public class SetTimerActivity extends Activity {
      */
     public void startTimer(View view) {
 
-        Log.d(LOG_TAG, "Starting sleep timer");
+        Log.d(LOG_TAG, "Sleep timer started by view " + view.getId());
 
         int hours = hoursPicker.getValue();
         int minutes = minutesPicker.getValue();
