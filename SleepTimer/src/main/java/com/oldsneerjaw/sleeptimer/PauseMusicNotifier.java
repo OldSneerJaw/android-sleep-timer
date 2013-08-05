@@ -23,19 +23,27 @@ public class PauseMusicNotifier {
     private static final String NOTIFICATION_TAG = PauseMusicNotifier.class.getName() + ".MusicPaused";
     private static final int NOTIFICATION_ID = 0;
 
+    private Context context;
+
     /**
      * Constructs an instance of {@link PauseMusicNotifier}.
+     *
+     * @param context The context. Must not be null.
      */
-    public PauseMusicNotifier() { }
+    public PauseMusicNotifier(Context context) {
+        if (context == null) {
+            throw new NullPointerException("Argument context cannot be null");
+        }
+
+        this.context = context.getApplicationContext();
+    }
 
     /**
      * Returns a notification for use when music playback is paused.
      *
-     * @param context The context
-     *
      * @return A {@link Notification}
      */
-    private Notification create(final Context context) {
+    private Notification create() {
         Resources resources = context.getResources();
 
         String title = resources.getString(R.string.paused_music_notification_title);
@@ -57,12 +65,10 @@ public class PauseMusicNotifier {
     }
 
     /**
-     * Posts a music paused notification to the status bar.
-     *
-     * @param context The context
+     * Posts a music paused notification to the system status bar.
      */
-    public void notify(final Context context) {
-        Notification notification = create(context);
+    public void postNotification() {
+        Notification notification = create();
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
