@@ -14,6 +14,9 @@ repositories {
 
 dependencies {
     compile 'com.android.support:support-v4:13.0.+'
+
+    // Required for Mockito support on Android: http://code.google.com/p/dexmaker/wiki/Mockito
+    instrumentTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
 }
 
 android {
