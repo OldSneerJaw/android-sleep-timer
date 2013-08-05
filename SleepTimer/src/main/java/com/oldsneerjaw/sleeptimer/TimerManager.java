@@ -14,8 +14,8 @@ import android.preference.PreferenceManager;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Manages the sleep timer.
@@ -30,7 +30,7 @@ public class TimerManager {
 
     private static final String SCHEDULED_TIME_KEY = TimerManager.class.getName() + ".scheduledTime";
 
-    private static Map<String, TimerManager> allInstances = new HashMap<String, TimerManager>();
+    private static ConcurrentMap<String, TimerManager> allInstances = new ConcurrentHashMap<String, TimerManager>();
 
     private Context context;
     private SharedPreferences sharedPreferences;
@@ -42,7 +42,7 @@ public class TimerManager {
      * @param context The context. Must not be null.
      */
     private TimerManager(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
@@ -58,11 +58,17 @@ public class TimerManager {
             throw new NullPointerException("Argument context cannot be null");
         }
 
-        if (!allInstances.containsKey(context.getPackageName())) {
-            allInstances.put(context.getPackageName(), new TimerManager(context));
-        }
+        String instanceKey = context.getPackageName();
 
-        return allInstances.get(context.getPackageName());
+        // A thread safe way of retrieving the TimerManager for the given context if it already exists, or creating
+        // a new instance if not
+        TimerManager existingInstance = allInstances.putIfAbsent(instanceKey, new TimerManager(context));
+        if (existingInstance != null) {
+            return existingInstance;
+        } else {
+            // A TimerManager didn't yet exist for the given context; return the newly created instance
+            return allInstances.get(instanceKey);
+        }
     }
 
     /**
