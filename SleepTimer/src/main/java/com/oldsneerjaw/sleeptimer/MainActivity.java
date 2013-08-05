@@ -44,17 +44,27 @@ public class MainActivity extends Activity {
      * ({@link CountdownActivity}) or not ({@link SetTimerActivity}).
      */
     private void launchActivity() {
-        Calendar calendarNow = Calendar.getInstance();
         Date scheduledTime = TimerManager.getInstance(this).getScheduledTime();
-
-        Intent intent;
-        if (scheduledTime == null || scheduledTime.getTime() <= calendarNow.getTimeInMillis()) {
-            // If the scheduled time occurs in the past, we treat it as if the timer is no longer running
-            intent = new Intent(this, SetTimerActivity.class);
-        } else {
-            intent = new Intent(this, CountdownActivity.class);
-        }
+        Intent intent = getActivityIntent(new Date(), scheduledTime);
 
         startActivityForResult(intent, 0);
+    }
+
+    /**
+     * Returns an intent that can be used to launch an activity to either schedule a timer or display the timer
+     * countdown depending on whether a timer is currently scheduled for the future.
+     *
+     * @param now The current date and time
+     * @param scheduledTime The date and time at which the timer should expire
+     *
+     * @return An {@link Intent} to launch either {@link SetTimerActivity} or {@link CountdownActivity}.
+     */
+    Intent getActivityIntent(Date now, Date scheduledTime) {
+        if (scheduledTime == null || scheduledTime.getTime() <= now.getTime()) {
+            // If the scheduled time occurs in the past, we treat it as if the timer is no longer running
+            return new Intent(this, SetTimerActivity.class);
+        } else {
+            return new Intent(this, CountdownActivity.class);
+        }
     }
 }
