@@ -20,8 +20,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Manages the sleep timer.
  * <p>
- *     Cannot be instantiated directly; call {@link TimerManager#getInstance(android.content.Context)}
- *     instead.
+ *     Call {@link TimerManager#getInstance(android.content.Context)} to instantiate.
  * </p>
  *
  * @author Joel Andrews
@@ -36,12 +35,12 @@ public class TimerManager {
     private SharedPreferences sharedPreferences;
 
     /**
-     * Constructs an instance of TimerManager. Cannot be instantiated directly; call
+     * Constructs an instance of TimerManager. Should not be instantiated directly; call
      * {@link TimerManager#getInstance(android.content.Context)} instead.
      *
      * @param context The context. Must not be null.
      */
-    private TimerManager(Context context) {
+    TimerManager(Context context) {
         this.context = context.getApplicationContext();
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -90,7 +89,7 @@ public class TimerManager {
         calendar.add(Calendar.MINUTE, minutes);
 
         // NOTE: If an alarm has already been set in this context, this will automatically replace it
-        PendingIntent intent = getBroadcastIntent();
+        PendingIntent intent = getAlarmIntent();
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), intent);
@@ -105,7 +104,7 @@ public class TimerManager {
      * Cancels the timer for the current context. If no timer is currently set, this will do nothing.
      */
     public void cancelTimer() {
-        PendingIntent intent = getBroadcastIntent();
+        PendingIntent intent = getAlarmIntent();
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(intent);
@@ -116,16 +115,16 @@ public class TimerManager {
     }
 
     /**
-     * Returns a {@link android.app.PendingIntent} that can be used to broadcast or cancel a pending pause music event.
+     * Returns a {@link android.app.PendingIntent} that can be used to create or cancel a pending pause music alarm.
      *
      * @return A {@link android.app.PendingIntent}
      */
-    private PendingIntent getBroadcastIntent() {
+    private PendingIntent getAlarmIntent() {
         return PendingIntent.getBroadcast(context, 0, new Intent(context, PauseMusicReceiver.class), 0);
     }
 
     /**
-     * Returns the time that the timer is set to expire.
+     * Returns the date and time that the timer is set to expire.
      *
      * @return A {@link Date}, or null if no timer is currently set
      */
