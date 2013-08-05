@@ -72,8 +72,8 @@ public class PauseMusicReceiver extends BroadcastReceiver {
      * @param context The context
      */
     private void notify(Context context) {
-        PauseMusicNotifier notifier = new PauseMusicNotifier();
-        notifier.notify(context);
+        PauseMusicNotifier notifier = new PauseMusicNotifier(context);
+        notifier.postNotification();
     }
 
 
