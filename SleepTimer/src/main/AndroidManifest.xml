@@ -22,9 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <receiver android:name="com.oldsneerjaw.sleeptimer.PauseMusicReceiver" />
-
         <activity
             android:name="com.oldsneerjaw.sleeptimer.CountdownActivity"
             android:label="@string/app_name" >
@@ -33,6 +30,10 @@
             android:name="com.oldsneerjaw.sleeptimer.SetTimerActivity"
             android:label="@string/app_name" >
         </activity>
+
+        <receiver android:name="com.oldsneerjaw.sleeptimer.PauseMusicReceiver" />
+
+        <service android:name=".PauseMusicService" android:exported="false"/>
     </application>
 
 </manifest>
