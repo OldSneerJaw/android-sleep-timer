@@ -31,6 +31,7 @@ public class PauseMusicService extends IntentService {
     private AudioManager audioManager;
     private AudioManager.OnAudioFocusChangeListener listener;
     private PauseMusicNotifier notifier;
+    private boolean running;
 
     /**
      * Constructs an instance of {@link PauseMusicService}.
@@ -40,11 +41,12 @@ public class PauseMusicService extends IntentService {
     }
 
     @Override
-    public void onCreate() {
+    public final void onCreate() {
         onCreate(
-                (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE),
+                (AudioManager) getSystemService(Context.AUDIO_SERVICE),
                 new AudioFocusListener(),
-                new PauseMusicNotifier(getApplicationContext()));
+                new PauseMusicNotifier(getApplicationContext())
+        );
     }
 
     /**
@@ -52,9 +54,13 @@ public class PauseMusicService extends IntentService {
      *
      * @param audioManager The audio manager to use
      * @param listener The audio focus change listener to use
-     * @param notifier The pause music notifier to use
+     * @param notifier Used to post notifications when music playback is paused
      */
-    void onCreate(AudioManager audioManager, AudioManager.OnAudioFocusChangeListener listener, PauseMusicNotifier notifier) {
+    protected void onCreate(
+            AudioManager audioManager,
+            AudioManager.OnAudioFocusChangeListener listener,
+            PauseMusicNotifier notifier) {
+
         super.onCreate();
 
         this.audioManager = audioManager;
@@ -63,22 +69,31 @@ public class PauseMusicService extends IntentService {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+
+        // This should force the service to remain running without requiring a foreground service with a persistent
+        // notification. Source: http://stackoverflow.com/a/12017536
+        return START_STICKY;
+    }
+
+    @Override
     protected void onHandleIntent(Intent intent) {
         // Attempt to hold onto audio focus indefinitely; only if another app explicitly requests audio focus
         // will this service willingly let it go
-        if (pauseMusicPlayback()) {
+        if (pauseAndNotify()) {
             Log.i(LOG_TAG, "Successfully paused music playback");
 
-            notifier.postNotification();
+            running = true;
 
             synchronized (this) {
-                try {
-                    // Wait indefinitely to ensure that the service is not recycled and that it keeps audio focus
-                    wait();
-                } catch (InterruptedException ex) {
-                    Log.d(LOG_TAG, "Service interrupted", ex);
-
-                    stopAndReleaseAudioFocus();
+                while (running) {
+                    try {
+                        // Wait indefinitely to ensure that the service is not recycled and that it keeps audio focus
+                        wait();
+                    } catch (InterruptedException ex) {
+                        Log.d(LOG_TAG, "Service interrupted", ex);
+                    }
                 }
             }
         } else {
@@ -87,12 +102,27 @@ public class PauseMusicService extends IntentService {
     }
 
     /**
+     * Pauses all music playback on the device and posts a notification to the status bar.
+     *
+     * @return {@code true} if playback was successfully paused; otherwise, {@code false}
+     */
+    boolean pauseAndNotify() {
+        if (pauseMusicPlayback()) {
+            notifier.postNotification();
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Pauses all music playback on the device.
      *
      * @return {@code true} if playback was successfully paused; otherwise, {@code false}
      */
-    boolean pauseMusicPlayback() {
-        // Taking audio focus should force other apps to pause/stopAndReleaseAudioFocus music playback
+    private boolean pauseMusicPlayback() {
+        // Taking audio focus should force other apps to pause/stop music playback
         int audioFocusResult =
                 audioManager.requestAudioFocus(listener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         if (audioFocusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
@@ -106,6 +136,7 @@ public class PauseMusicService extends IntentService {
      * Stops the service and releases audio focus.
      */
     void stopAndReleaseAudioFocus() {
+        running = false;
         audioManager.abandonAudioFocus(listener);
         stopSelf();
     }
@@ -116,9 +147,12 @@ public class PauseMusicService extends IntentService {
 
         if (listener != null && audioManager != null) {
             audioManager.abandonAudioFocus(listener);
-            listener = null;
-            audioManager = null;
         }
+
+        running = false;
+        notifier = null;
+        listener = null;
+        audioManager = null;
     }
 
     /**
