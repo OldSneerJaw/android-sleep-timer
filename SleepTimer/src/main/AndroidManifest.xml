@@ -33,7 +33,7 @@
 
         <receiver android:name="com.oldsneerjaw.sleeptimer.PauseMusicReceiver" />
 
-        <service android:name=".PauseMusicService" android:exported="false"/>
+        <service android:name=".PauseMusicService" android:exported="false" android:process=":SleepTimerService"/>
     </application>
 
 </manifest>
