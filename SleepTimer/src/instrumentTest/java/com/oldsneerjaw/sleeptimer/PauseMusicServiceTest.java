@@ -12,6 +12,7 @@ public class PauseMusicServiceTest extends AndroidTestCase {
 
     private AudioManager mockAudioManager;
     private AudioManager.OnAudioFocusChangeListener mockListener;
+    private PauseMusicNotifier mockNotifier;
     private PauseMusicService service;
 
     @Override
@@ -20,24 +21,28 @@ public class PauseMusicServiceTest extends AndroidTestCase {
 
         mockAudioManager = Mockito.mock(AudioManager.class);
         mockListener = Mockito.mock(AudioManager.OnAudioFocusChangeListener.class);
-        PauseMusicNotifier mockNotifier = Mockito.mock(PauseMusicNotifier.class);
+        mockNotifier = Mockito.mock(PauseMusicNotifier.class);
 
         service = new PauseMusicService();
         service.onCreate(mockAudioManager, mockListener, mockNotifier);
     }
 
-    public void testPauseMusicPlayback_Success() {
+    public void testPauseAndNotify_Success() {
         Mockito.when(mockAudioManager.requestAudioFocus(mockListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN))
                 .thenReturn(AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
 
-        assertTrue(service.pauseMusicPlayback());
+        assertTrue(service.pauseAndNotify());
+
+        Mockito.verify(mockNotifier).postNotification();
     }
 
-    public void testPauseMusicPlayback_Failed() {
+    public void testPauseAndNotify_Failed() {
         Mockito.when(mockAudioManager.requestAudioFocus(mockListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN))
                 .thenReturn(AudioManager.AUDIOFOCUS_REQUEST_FAILED);
 
-        assertFalse(service.pauseMusicPlayback());
+        assertFalse(service.pauseAndNotify());
+
+        Mockito.verifyNoMoreInteractions(mockNotifier);
     }
 
     public void testOnDestroy() {
