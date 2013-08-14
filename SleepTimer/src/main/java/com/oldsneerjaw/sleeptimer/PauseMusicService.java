@@ -1,3 +1,8 @@
+/*
+Copyright (c) 2013 Joel Andrews
+Distributed under the MIT License: http://opensource.org/licenses/MIT
+ */
+
 package com.oldsneerjaw.sleeptimer;
 
 import android.app.IntentService;
@@ -138,8 +143,11 @@ public class PauseMusicService extends IntentService {
     public void onDestroy() {
         super.onDestroy();
 
+        // Because this is a sticky service, we should generally only get here if music playback has been manually
+        // restarted or the user has manually killed the service's process; in any event, release all resources
         audioManager.abandonAudioFocus(listener);
         isMusicPaused = false;
+        notifier.cancelNotification();
 
         synchronized (syncLock) {
             syncLock.notify();
