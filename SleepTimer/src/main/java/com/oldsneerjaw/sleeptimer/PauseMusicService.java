@@ -31,7 +31,9 @@ public class PauseMusicService extends IntentService {
     private AudioManager audioManager;
     private AudioManager.OnAudioFocusChangeListener listener;
     private PauseMusicNotifier notifier;
-    private boolean running;
+    private boolean isMusicPaused;
+
+    private final Object syncLock = new Object();
 
     /**
      * Constructs an instance of {@link PauseMusicService}.
@@ -84,13 +86,13 @@ public class PauseMusicService extends IntentService {
         if (pauseAndNotify()) {
             Log.i(LOG_TAG, "Successfully paused music playback");
 
-            running = true;
+            isMusicPaused = true;
 
-            synchronized (this) {
-                while (running) {
+            synchronized (syncLock) {
+                while (isMusicPaused) {
                     try {
                         // Wait indefinitely to ensure that the service is not recycled and that it keeps audio focus
-                        wait();
+                        syncLock.wait();
                     } catch (InterruptedException ex) {
                         Log.d(LOG_TAG, "Service interrupted", ex);
                     }
@@ -132,24 +134,17 @@ public class PauseMusicService extends IntentService {
         }
     }
 
-    /**
-     * Stops the service and releases audio focus.
-     */
-    void stopAndReleaseAudioFocus() {
-        running = false;
-        audioManager.abandonAudioFocus(listener);
-        stopSelf();
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        if (listener != null && audioManager != null) {
-            audioManager.abandonAudioFocus(listener);
+        audioManager.abandonAudioFocus(listener);
+        isMusicPaused = false;
+
+        synchronized (syncLock) {
+            syncLock.notify();
         }
 
-        running = false;
         notifier = null;
         listener = null;
         audioManager = null;
@@ -170,7 +165,7 @@ public class PauseMusicService extends IntentService {
                     // Since audio focus has been permanently taken by another process (e.g. the user explicitly
                     // restarted music playback), the service can be stopped and audio focus released so this process
                     // does not automatically reclaim audio focus when/if the new owner relinquishes it
-                    stopAndReleaseAudioFocus();
+                    stopSelf();
 
                     break;
                 default:
