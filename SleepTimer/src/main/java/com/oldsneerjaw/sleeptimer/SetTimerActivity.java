@@ -64,14 +64,6 @@ public class SetTimerActivity extends Activity {
         minutesPicker.setValue(sharedPreferences.getInt(MINUTES_KEY, DEFAULT_MINUTES));
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.set_timer, menu);
-        return true;
-    }
-
     /**
      * Starts a countdown timer based on the current settings.
      *
