@@ -20,22 +20,40 @@ import android.support.v4.app.NotificationCompat;
  */
 public class PauseMusicNotifier {
 
-    private static final String NOTIFICATION_TAG = PauseMusicNotifier.class.getName() + ".MusicPaused";
-    private static final int NOTIFICATION_ID = 0;
+    private static final int NOTIFICATION_ID = 1;
 
-    private Context context;
+    private final Context context;
+    private final NotificationManager notificationManager;
+    private final Resources resources;
 
     /**
      * Constructs an instance of {@link PauseMusicNotifier}.
      *
-     * @param context The context. Must not be null.
+     * @param context The context
      */
     public PauseMusicNotifier(Context context) {
+        this(context, (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE), context.getResources());
+    }
+
+    /**
+     * Constructs an instance of {@link PauseMusicNotifier}.
+     *
+     * @param context The context
+     * @param notificationManager The system notification manager
+     * @param resources The app's resources
+     */
+    PauseMusicNotifier(Context context, NotificationManager notificationManager, Resources resources) {
         if (context == null) {
             throw new NullPointerException("Argument context cannot be null");
+        } else if (notificationManager == null) {
+            throw new NullPointerException("Argument notificationManager cannot be null");
+        } else if (resources == null) {
+            throw new NullPointerException("Argument resources cannot be null");
         }
 
         this.context = context.getApplicationContext();
+        this.notificationManager = notificationManager;
+        this.resources = resources;
     }
 
     /**
@@ -44,8 +62,6 @@ public class PauseMusicNotifier {
      * @return A {@link Notification}
      */
     private Notification create() {
-        Resources resources = context.getResources();
-
         String title = resources.getString(R.string.paused_music_notification_title);
         String text = resources.getString(R.string.paused_music_notification_text);
 
@@ -70,8 +86,13 @@ public class PauseMusicNotifier {
     public void postNotification() {
         Notification notification = create();
 
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notification);
+        notificationManager.notify(NOTIFICATION_ID, notification);
+    }
+
+    /**
+     * Cancels and removes the music paused notification, in any, from the system status bar.
+     */
+    public void cancelNotification() {
+        notificationManager.cancel(NOTIFICATION_ID);
     }
 }
