@@ -55,4 +55,13 @@ public class PauseMusicServiceTest extends AndroidTestCase {
 
         Mockito.verify(mockAudioManager).abandonAudioFocus(mockListener);
     }
+
+    public void testListenerOnAudioFocusChange_FocusLost() {
+        PauseMusicService mockService = Mockito.mock(PauseMusicService.class);
+        PauseMusicService.AudioFocusListener listener = mockService.new AudioFocusListener(mockAudioManager);
+
+        listener.onAudioFocusChange(AudioManager.AUDIOFOCUS_LOSS);
+
+        Mockito.verify(mockAudioManager).abandonAudioFocus(listener);
+    }
 }
