@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.os.CountDownTimer;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;

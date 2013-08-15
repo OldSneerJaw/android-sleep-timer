@@ -50,11 +50,8 @@ public class TimerManagerTest extends AndroidTestCase {
         Context mockContext = Mockito.mock(Context.class);
         Mockito.when(mockContext.getPackageName()).thenReturn(packageName);
         Mockito.when(mockContext.getApplicationContext()).thenReturn(mockContext);
-        Mockito.when(mockContext.getSharedPreferences(packageName + "_preferences", Context.MODE_PRIVATE))
-                .thenReturn(mockPreferences);
-        Mockito.when(mockContext.getSystemService(Context.ALARM_SERVICE)).thenReturn(mockAlarmManager);
 
-        timerManager = new TimerManager(mockContext);
+        timerManager = new TimerManager(mockContext, mockPreferences, mockAlarmManager);
     }
 
     public void testGetInstance_EqualContextsReturnSameInstance() {
@@ -113,15 +110,15 @@ public class TimerManagerTest extends AndroidTestCase {
     }
 
     public void testGetScheduledTime_PreferenceSet() {
-        long expectedTime = 47382472;
+        long expectedTimeMs = 47382472;
 
         Mockito.when(mockPreferences.contains(SCHEDULED_TIME_KEY)).thenReturn(true);
         Mockito.when(mockPreferences.getLong(Mockito.argThat(Is.is(SCHEDULED_TIME_KEY)), Mockito.anyLong()))
-                .thenReturn(expectedTime);
+                .thenReturn(expectedTimeMs);
 
         Date result = timerManager.getScheduledTime();
 
-        assertEquals(new Date(expectedTime), result);
+        assertEquals(new Date(expectedTimeMs), result);
     }
 
     public void testGetScheduledTime_PreferenceNotSet() {
