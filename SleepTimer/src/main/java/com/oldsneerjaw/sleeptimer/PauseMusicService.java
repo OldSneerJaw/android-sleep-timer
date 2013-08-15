@@ -49,9 +49,11 @@ public class PauseMusicService extends IntentService {
 
     @Override
     public final void onCreate() {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
         onCreate(
-                (AudioManager) getSystemService(Context.AUDIO_SERVICE),
-                new AudioFocusListener(),
+                audioManager,
+                new AudioFocusListener(audioManager),
                 new PauseMusicNotifier(getApplicationContext())
         );
     }
@@ -163,6 +165,17 @@ public class PauseMusicService extends IntentService {
      */
     class AudioFocusListener implements AudioManager.OnAudioFocusChangeListener {
 
+        private AudioManager audioManager;
+
+        /**
+         * Constructs an instance of {@link AudioFocusListener}.
+         *
+         * @param audioManager The audio manager to use.
+         */
+        public AudioFocusListener(AudioManager audioManager) {
+            this.audioManager = audioManager;
+        }
+
         @Override
         public void onAudioFocusChange(int focusChange) {
 
@@ -173,6 +186,7 @@ public class PauseMusicService extends IntentService {
                     // Since audio focus has been permanently taken by another process (e.g. the user explicitly
                     // restarted music playback), the service can be stopped and audio focus released so this process
                     // does not automatically reclaim audio focus when/if the new owner relinquishes it
+                    audioManager.abandonAudioFocus(this);
                     stopSelf();
 
                     break;
