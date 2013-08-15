@@ -18,9 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Manages the sleep timer.
+ * Manages scheduling and cancelling the sleep timer.
  * <p>
- *     Call {@link TimerManager#getInstance(android.content.Context)} to instantiate.
+ *     Call {@link TimerManager#getInstance(Context)} to instantiate.
  * </p>
  *
  * @author Joel Andrews
@@ -31,18 +31,35 @@ public class TimerManager {
 
     private static ConcurrentMap<String, TimerManager> allInstances = new ConcurrentHashMap<String, TimerManager>();
 
-    private Context context;
-    private SharedPreferences sharedPreferences;
+    private final Context context;
+    private final SharedPreferences sharedPreferences;
+    private final AlarmManager alarmManager;
 
     /**
-     * Constructs an instance of TimerManager. Should not be instantiated directly; call
-     * {@link TimerManager#getInstance(android.content.Context)} instead.
+     * Constructs an instance of {@link TimerManager}.
      *
-     * @param context The context. Must not be null.
+     * @param context The context
      */
-    TimerManager(Context context) {
+    private TimerManager(Context context) {
+        this(
+                context,
+                PreferenceManager.getDefaultSharedPreferences(context),
+                (AlarmManager) context.getSystemService(Context.ALARM_SERVICE)
+        );
+    }
+
+    /**
+     * Constructs an instance of {@link TimerManager}. Should not be instantiated directly; call
+     * {@link TimerManager#getInstance(Context)} instead.
+     *
+     * @param context The context
+     * @param sharedPreferences The shared preferences to use
+     * @param alarmManager The alarm manager to use
+     */
+    TimerManager(Context context, SharedPreferences sharedPreferences, AlarmManager alarmManager) {
         this.context = context.getApplicationContext();
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        this.sharedPreferences = sharedPreferences;
+        this.alarmManager = alarmManager;
     }
 
     /**
@@ -71,7 +88,7 @@ public class TimerManager {
     }
 
     /**
-     * Sets a timer for the given number of hours and minutes in the future to pause music playback.
+     * Sets a timer to pause music playback the given number of hours and minutes in the future.
      * If a timer is already set for the current context, this will replace it.
      *
      * @param hours The number of hours. Must be non-negative.
@@ -88,10 +105,12 @@ public class TimerManager {
         calendar.add(Calendar.HOUR, hours);
         calendar.add(Calendar.MINUTE, minutes);
 
-        // NOTE: If an alarm has already been set in this context, this will automatically replace it
+        // NOTE: If an alarm has already been set in this context, this intent will automatically replace it
         PendingIntent intent = getAlarmIntent();
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        // Using the RTC alarm type means the alarm manager will not wake the device if it is asleep when the time is
+        // reached. This is intentional; if the device is asleep, then it means there is no music currently playing
+        // and there's no point in waking it up.
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), intent);
 
         // Save the currently scheduled time
@@ -106,7 +125,6 @@ public class TimerManager {
     public void cancelTimer() {
         PendingIntent intent = getAlarmIntent();
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(intent);
 
         sharedPreferences.edit()

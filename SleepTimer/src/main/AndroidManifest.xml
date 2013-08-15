@@ -33,6 +33,7 @@
 
         <receiver android:name="com.oldsneerjaw.sleeptimer.PauseMusicReceiver" />
 
+        <!-- The service will run in its own private process -->
         <service android:name=".PauseMusicService" android:exported="false" android:process=":SleepTimerService"/>
     </application>
 
