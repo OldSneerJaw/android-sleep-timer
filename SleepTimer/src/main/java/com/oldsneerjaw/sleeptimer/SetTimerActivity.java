@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.NumberPicker;
@@ -37,21 +36,36 @@ public class SetTimerActivity extends Activity {
     private static final int DEFAULT_HOURS = 1;
     private static final int DEFAULT_MINUTES = 0;
 
+    private TimerManager timerManager;
+    private SharedPreferences sharedPreferences;
     private NumberPicker hoursPicker;
     private NumberPicker minutesPicker;
 
-    private SharedPreferences sharedPreferences;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(Bundle savedInstanceState) {
+        onCreate(savedInstanceState, TimerManager.getInstance(this), PreferenceManager.getDefaultSharedPreferences(this));
+    }
+
+    /**
+     * Initializes the activity's dependencies.
+     *
+     * @param savedInstanceState The activity's previous state
+     * @param timerManager The timer manager to use
+     * @param sharedPreferences The shared preferences to use
+     */
+    protected void onCreate(Bundle savedInstanceState, TimerManager timerManager, SharedPreferences sharedPreferences) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_set_timer);
 
         // Prevent the soft keyboard from appearing until explicitly launched by the user
         // Source: http://stackoverflow.com/a/2059394
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        this.timerManager = timerManager;
+        this.sharedPreferences = sharedPreferences;
 
         hoursPicker = (NumberPicker) findViewById(R.id.hours_picker);
         hoursPicker.setMinValue(MIN_HOURS);
@@ -70,7 +84,6 @@ public class SetTimerActivity extends Activity {
      * @param view The view that triggered this action
      */
     public void startTimer(View view) {
-
         Log.d(LOG_TAG, "Sleep timer started by view " + view.getId());
 
         // Explicitly clear focus from the number pickers to ensure that the stored values get updated.
@@ -84,7 +97,7 @@ public class SetTimerActivity extends Activity {
         // The currently selected values should become the new defaults
         setDefaultTimerLength(hours, minutes);
 
-        TimerManager.getInstance(this).setTimer(hours, minutes);
+        timerManager.setTimer(hours, minutes);
 
         Toast.makeText(this, R.string.timer_started, Toast.LENGTH_SHORT).show();
 
