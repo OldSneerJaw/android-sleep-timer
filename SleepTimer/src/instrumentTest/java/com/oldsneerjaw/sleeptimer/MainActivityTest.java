@@ -44,10 +44,10 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.MILLISECOND, 0);
 
-        calendar.set(2013, 7, 5, 15, 53, 48);
+        calendar.set(2013, Calendar.AUGUST, 5, 15, 53, 48);
         Date now = calendar.getTime();
 
-        calendar.set(2014, 8, 6, 16, 54, 49);
+        calendar.set(2014, Calendar.SEPTEMBER, 6, 16, 54, 49);
         Date scheduledTime = calendar.getTime();
 
         Intent result = activity.getActivityIntent(now, scheduledTime);
@@ -60,10 +60,10 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.MILLISECOND, 0);
 
-        calendar.set(2013, 7, 5, 15, 53, 48);
+        calendar.set(2013, Calendar.AUGUST, 5, 15, 53, 48);
         Date now = calendar.getTime();
 
-        calendar.set(2012, 6, 4, 14, 52, 47);
+        calendar.set(2012, Calendar.JULY, 4, 14, 52, 47);
         Date scheduledTime = calendar.getTime();
 
         Intent result = activity.getActivityIntent(now, scheduledTime);
@@ -75,7 +75,7 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
     public void testGetActivityIntent_PresentScheduledTime() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.MILLISECOND, 0);
-        calendar.set(2013, 7, 5, 15, 53, 48);
+        calendar.set(2013, Calendar.AUGUST, 5, 15, 53, 48);
 
         Date now = calendar.getTime();
         Date scheduledTime = calendar.getTime();

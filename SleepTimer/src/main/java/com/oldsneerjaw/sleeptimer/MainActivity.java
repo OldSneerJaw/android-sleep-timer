@@ -8,7 +8,6 @@ package com.oldsneerjaw.sleeptimer;
 import android.content.Intent;
 import android.app.Activity;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
