@@ -8,7 +8,6 @@ package com.oldsneerjaw.sleeptimer;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.test.AndroidTestCase;
 import android.text.TextUtils;
 
 import org.hamcrest.BaseMatcher;
@@ -20,7 +19,7 @@ import org.mockito.Mockito;
  *
  * @author Joel Andrews
  */
-public class PauseMusicReceiverTest extends AndroidTestCase {
+public class PauseMusicReceiverTest extends AndroidMockingTestCase {
 
     public void testPauseMusic() {
         Context mockContext = Mockito.mock(Context.class);
