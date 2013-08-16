@@ -10,7 +10,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.v4.app.NotificationCompat;
-import android.test.AndroidTestCase;
 import android.text.TextUtils;
 
 import org.hamcrest.BaseMatcher;
@@ -22,29 +21,27 @@ import org.mockito.Mockito;
  *
  * @author Joel Andrews
  */
-public class PauseMusicNotifierTest extends AndroidTestCase {
+public class PauseMusicNotifierTest extends AndroidMockingTestCase {
 
     private static final int NOTIFICATION_ID = 1;
 
     private static final String NOTIFICATION_TITLE = "foo";
     private static final String NOTIFICATION_TEXT = "bar";
 
-    private Context mockContext;
     private NotificationManager mockNotificationManager;
-    private Resources mockResources;
     private PauseMusicNotifier notifier;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        mockContext = Mockito.mock(Context.class);
+        Context mockContext = Mockito.mock(Context.class);
         Mockito.when(mockContext.getPackageName()).thenReturn("com.oldsneerjaw.sleeptimer");
         Mockito.when(mockContext.getApplicationContext()).thenReturn(mockContext);
 
         mockNotificationManager = Mockito.mock(NotificationManager.class);
 
-        mockResources = Mockito.mock(Resources.class);
+        Resources mockResources = Mockito.mock(Resources.class);
         Mockito.when(mockResources.getString(R.string.paused_music_notification_title)).thenReturn(NOTIFICATION_TITLE);
         Mockito.when(mockResources.getString(R.string.paused_music_notification_text)).thenReturn(NOTIFICATION_TEXT);
 
