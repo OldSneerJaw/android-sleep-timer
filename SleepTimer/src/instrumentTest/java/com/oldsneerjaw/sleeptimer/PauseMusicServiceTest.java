@@ -6,14 +6,13 @@ Distributed under the MIT License: http://opensource.org/licenses/MIT
 package com.oldsneerjaw.sleeptimer;
 
 import android.media.AudioManager;
-import android.test.AndroidTestCase;
 
 import org.mockito.Mockito;
 
 /**
  * Test cases for {@link PauseMusicService}.
  */
-public class PauseMusicServiceTest extends AndroidTestCase {
+public class PauseMusicServiceTest extends AndroidMockingTestCase {
 
     private AudioManager mockAudioManager;
     private AudioManager.OnAudioFocusChangeListener mockListener;
