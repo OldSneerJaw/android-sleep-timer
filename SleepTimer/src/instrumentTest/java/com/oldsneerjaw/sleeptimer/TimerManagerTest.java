@@ -9,7 +9,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.test.AndroidTestCase;
 
 import org.hamcrest.core.Is;
 import org.mockito.Mockito;
@@ -21,7 +20,7 @@ import java.util.Date;
  *
  * @author Joel Andrews
  */
-public class TimerManagerTest extends AndroidTestCase {
+public class TimerManagerTest extends AndroidMockingTestCase {
 
     private static final String SCHEDULED_TIME_KEY = "com.oldsneerjaw.sleeptimer.TimerManager.scheduledTime";
 
@@ -83,8 +82,8 @@ public class TimerManagerTest extends AndroidTestCase {
     }
 
     public void testSetTimer() {
-        int hours = 1;
-        int minutes = 10;
+        final int hours = 1;
+        final int minutes = 10;
         timerManager.setTimer(hours, minutes);
 
         Mockito.verify(mockAlarmManager).set(
@@ -110,7 +109,7 @@ public class TimerManagerTest extends AndroidTestCase {
     }
 
     public void testGetScheduledTime_PreferenceSet() {
-        long expectedTimeMs = 47382472;
+        final long expectedTimeMs = 47382472;
 
         Mockito.when(mockPreferences.contains(SCHEDULED_TIME_KEY)).thenReturn(true);
         Mockito.when(mockPreferences.getLong(Mockito.argThat(Is.is(SCHEDULED_TIME_KEY)), Mockito.anyLong()))
