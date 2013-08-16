@@ -134,11 +134,7 @@ public class PauseMusicService extends IntentService {
         // Taking audio focus should force other apps to pause/stop music playback
         int audioFocusResult =
                 audioManager.requestAudioFocus(listener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-        if (audioFocusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
+        return audioFocusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
 
     @Override
