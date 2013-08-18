@@ -59,11 +59,15 @@ public class MainActivity extends Activity {
      * @return An {@link Intent} to launch either {@link SetTimerActivity} or {@link CountdownActivity}.
      */
     Intent getActivityIntent(Date now, Date scheduledTime) {
+        Class activityClass;
         if (scheduledTime == null || scheduledTime.getTime() <= now.getTime()) {
             // If the scheduled time occurs in the past, we treat it as if the timer is no longer running
-            return new Intent(this, SetTimerActivity.class);
+            activityClass = SetTimerActivity.class;
         } else {
-            return new Intent(this, CountdownActivity.class);
+            activityClass = CountdownActivity.class;
         }
+
+        return new Intent(this, activityClass)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
 }
