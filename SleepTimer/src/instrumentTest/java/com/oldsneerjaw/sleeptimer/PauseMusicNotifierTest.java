@@ -50,6 +50,34 @@ public class PauseMusicNotifierTest extends AndroidMockingTestCase {
         notifier = new PauseMusicNotifier(mockContext, mockNotificationManager, mockResources);
     }
 
+    public void testGetInstance_EqualContextsReturnSameInstance() {
+        String packageName = "foo";
+
+        Context context1 = Mockito.mock(Context.class);
+        Mockito.when(context1.getPackageName()).thenReturn(packageName);
+
+        Context context2 = Mockito.mock(Context.class);
+        Mockito.when(context2.getPackageName()).thenReturn(packageName);
+
+        PauseMusicNotifier instance1 = PauseMusicNotifier.get(context1);
+        PauseMusicNotifier instance2 = PauseMusicNotifier.get(context2);
+
+        assertSame(instance1, instance2);
+    }
+
+    public void testGetInstance_DifferentContextsReturnDifferentInstances() {
+        Context context1 = Mockito.mock(Context.class);
+        Mockito.when(context1.getPackageName()).thenReturn("foo");
+
+        Context context2 = Mockito.mock(Context.class);
+        Mockito.when(context2.getPackageName()).thenReturn("bar");
+
+        PauseMusicNotifier instance1 = PauseMusicNotifier.get(context1);
+        PauseMusicNotifier instance2 = PauseMusicNotifier.get(context2);
+
+        assertNotSame(instance1, instance2);
+    }
+
     public void testPostNotification() {
         notifier.postNotification();
 
