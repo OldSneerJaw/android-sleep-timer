@@ -29,7 +29,7 @@ import java.util.Locale;
  */
 public class CountdownNotifierTest extends AndroidMockingTestCase {
 
-    private static final int NOTIFICATION_ID = 1;
+    private static final int NOTIFICATION_ID = 2;
 
     private static final String NOTIFICATION_TITLE = "foo";
     private static final String NOTIFICATION_TEXT = "bar";
