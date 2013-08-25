@@ -32,7 +32,7 @@ public class CountdownNotifier {
 
     private static ConcurrentMap<String, CountdownNotifier> allInstances = new ConcurrentHashMap<String, CountdownNotifier>();
 
-    private static final int NOTIFICATION_ID = 1;
+    private static final int NOTIFICATION_ID = 2;
 
     private final Context context;
     private final NotificationManager notificationManager;
@@ -54,7 +54,8 @@ public class CountdownNotifier {
     }
 
     /**
-     * Constructs an instance of {@link CountdownNotifier}.
+     * Constructs an instance of {@link CountdownNotifier}. Should not be instantiated directly; call
+     * {@link #get(Context)} instead.
      *
      * @param context The context
      * @param notificationManager The system notification manager

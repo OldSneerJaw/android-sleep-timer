@@ -29,11 +29,12 @@ public class CountdownActivity extends Activity {
     private TextView timeRemainingView;
     private CountDownTimer countDownTimer;
     private TimerManager timerManager;
-    private CountdownNotifier notifier;
+    private CountdownNotifier countdownNotifier;
+    private PauseMusicNotifier pauseMusicNotifier;
 
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
-        onCreate(savedInstanceState, TimerManager.get(this), CountdownNotifier.get(this));
+        onCreate(savedInstanceState, TimerManager.get(this), CountdownNotifier.get(this), PauseMusicNotifier.get(this));
     }
 
     /**
@@ -41,9 +42,15 @@ public class CountdownActivity extends Activity {
      *
      * @param savedInstanceState The activity's previous state
      * @param timerManager The timer manager to use
-     * @param notifier The countdown notifier to use
+     * @param countdownNotifier The countdown notifier to use
+     * @param pauseMusicNotifier The pause music notifier to use
      */
-    protected void onCreate(Bundle savedInstanceState, TimerManager timerManager, CountdownNotifier notifier) {
+    protected void onCreate(
+            Bundle savedInstanceState,
+            TimerManager timerManager,
+            CountdownNotifier countdownNotifier,
+            PauseMusicNotifier pauseMusicNotifier) {
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_countdown);
@@ -51,7 +58,8 @@ public class CountdownActivity extends Activity {
         this.timeRemainingView = (TextView) findViewById(R.id.time_remaining_view);
 
         this.timerManager = timerManager;
-        this.notifier = notifier;
+        this.countdownNotifier = countdownNotifier;
+        this.pauseMusicNotifier = pauseMusicNotifier;
     }
 
     @Override
@@ -88,7 +96,10 @@ public class CountdownActivity extends Activity {
 
         countDownTimer = new MyCountDownTimer(timerMillis).start();
 
-        notifier.postNotification(scheduledTime);
+        countdownNotifier.postNotification(scheduledTime);
+
+        // It is possible that a previous music paused notification is still active; remove it
+        pauseMusicNotifier.cancelNotification();
     }
 
     /**
@@ -100,7 +111,7 @@ public class CountdownActivity extends Activity {
         Log.d(LOG_TAG, "Sleep timer canceled by view " + view.getId());
 
         timerManager.cancelTimer();
-        notifier.cancelNotification();
+        countdownNotifier.cancelNotification();
 
         if (countDownTimer != null) {
             countDownTimer.cancel();
