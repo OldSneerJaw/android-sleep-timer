@@ -28,14 +28,38 @@ public class CountdownActivity extends Activity {
 
     private TextView timeRemainingView;
     private CountDownTimer countDownTimer;
+    private TimerManager timerManager;
+    private CountdownNotifier countdownNotifier;
+    private PauseMusicNotifier pauseMusicNotifier;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(Bundle savedInstanceState) {
+        onCreate(savedInstanceState, TimerManager.get(this), CountdownNotifier.get(this), PauseMusicNotifier.get(this));
+    }
+
+    /**
+     * Initializes the activity's dependencies.
+     *
+     * @param savedInstanceState The activity's previous state
+     * @param timerManager The timer manager to use
+     * @param countdownNotifier The countdown notifier to use
+     * @param pauseMusicNotifier The pause music notifier to use
+     */
+    protected void onCreate(
+            Bundle savedInstanceState,
+            TimerManager timerManager,
+            CountdownNotifier countdownNotifier,
+            PauseMusicNotifier pauseMusicNotifier) {
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_countdown);
 
-        timeRemainingView = (TextView) findViewById(R.id.time_remaining_view);
+        this.timeRemainingView = (TextView) findViewById(R.id.time_remaining_view);
+
+        this.timerManager = timerManager;
+        this.countdownNotifier = countdownNotifier;
+        this.pauseMusicNotifier = pauseMusicNotifier;
     }
 
     @Override
@@ -59,7 +83,7 @@ public class CountdownActivity extends Activity {
      */
     private void startTimer() {
         Calendar calendarNow = Calendar.getInstance();
-        Date scheduledTime = TimerManager.getInstance(this).getScheduledTime();
+        Date scheduledTime = timerManager.getScheduledTime();
 
         if (scheduledTime == null || scheduledTime.getTime() <= calendarNow.getTimeInMillis()) {
             // The timer has already expired; return to the caller
@@ -71,6 +95,11 @@ public class CountdownActivity extends Activity {
         long timerMillis = scheduledTime.getTime() - calendarNow.getTimeInMillis();
 
         countDownTimer = new MyCountDownTimer(timerMillis).start();
+
+        countdownNotifier.postNotification(scheduledTime);
+
+        // It is possible that a previous music paused notification is still active; remove it
+        pauseMusicNotifier.cancelNotification();
     }
 
     /**
@@ -81,7 +110,8 @@ public class CountdownActivity extends Activity {
     public void stopTimer(View view) {
         Log.d(LOG_TAG, "Sleep timer canceled by view " + view.getId());
 
-        TimerManager.getInstance(this).cancelTimer();
+        timerManager.cancelTimer();
+        countdownNotifier.cancelNotification();
 
         if (countDownTimer != null) {
             countDownTimer.cancel();

@@ -54,7 +54,7 @@ public class PauseMusicService extends IntentService {
         onCreate(
                 audioManager,
                 new AudioFocusListener(audioManager),
-                new PauseMusicNotifier(getApplicationContext())
+                PauseMusicNotifier.get(getApplicationContext())
         );
     }
 

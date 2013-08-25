@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
      * ({@link CountdownActivity}) or not ({@link SetTimerActivity}).
      */
     private void launchActivity() {
-        Date scheduledTime = TimerManager.getInstance(this).getScheduledTime();
+        Date scheduledTime = TimerManager.get(this).getScheduledTime();
         Intent intent = getActivityIntent(new Date(), scheduledTime);
 
         startActivityForResult(intent, 0);
