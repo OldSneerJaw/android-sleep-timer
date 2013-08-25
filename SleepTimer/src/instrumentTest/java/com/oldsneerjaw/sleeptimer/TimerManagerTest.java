@@ -10,6 +10,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.oldsneerjaw.sleeptimer.test.AndroidMockingTestCase;
+
 import org.hamcrest.core.Is;
 import org.mockito.Mockito;
 
