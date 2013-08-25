@@ -10,5 +10,7 @@
     <string name="minutes_label">m</string>
     <string name="paused_music_notification_title">Sleep Timer - Music Paused</string>
     <string name="paused_music_notification_text">Good night!</string>
+    <string name="countdown_notification_title">Sleep Timer - Countdown Active</string>
+    <string name="countdown_notification_text">Music will be paused at %s</string>
 
 </resources>

@@ -64,8 +64,8 @@ public class TimerManagerTest extends AndroidMockingTestCase {
         Context context2 = Mockito.mock(Context.class);
         Mockito.when(context2.getPackageName()).thenReturn(packageName);
 
-        TimerManager instance1 = TimerManager.getInstance(context1);
-        TimerManager instance2 = TimerManager.getInstance(context2);
+        TimerManager instance1 = TimerManager.get(context1);
+        TimerManager instance2 = TimerManager.get(context2);
 
         assertSame(instance1, instance2);
     }
@@ -77,8 +77,8 @@ public class TimerManagerTest extends AndroidMockingTestCase {
         Context context2 = Mockito.mock(Context.class);
         Mockito.when(context2.getPackageName()).thenReturn("bar");
 
-        TimerManager instance1 = TimerManager.getInstance(context1);
-        TimerManager instance2 = TimerManager.getInstance(context2);
+        TimerManager instance1 = TimerManager.get(context1);
+        TimerManager instance2 = TimerManager.get(context2);
 
         assertNotSame(instance1, instance2);
     }

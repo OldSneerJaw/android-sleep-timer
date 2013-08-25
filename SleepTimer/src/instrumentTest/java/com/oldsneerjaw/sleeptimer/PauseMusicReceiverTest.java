@@ -26,9 +26,12 @@ public class PauseMusicReceiverTest extends AndroidMockingTestCase {
     public void testPauseMusic() {
         Context mockContext = Mockito.mock(Context.class);
         TimerManager mockTimerManager = Mockito.mock(TimerManager.class);
+        CountdownNotifier mockNotifier = Mockito.mock(CountdownNotifier.class);
 
-        new PauseMusicReceiver().pauseMusic(mockContext, mockTimerManager);
+        new PauseMusicReceiver().pauseMusic(mockContext, mockTimerManager, mockNotifier);
 
+        Mockito.verify(mockTimerManager).cancelTimer();
+        Mockito.verify(mockNotifier).cancelNotification();
         Mockito.verify(mockContext).startService(Mockito.argThat(new BaseMatcher<Intent>() {
             @Override
             public boolean matches(Object o) {
@@ -44,7 +47,5 @@ public class PauseMusicReceiverTest extends AndroidMockingTestCase {
                 description.appendText("explicit intent to launch " + PauseMusicService.class.getName());
             }
         }));
-
-        Mockito.verify(mockTimerManager).cancelTimer();
     }
 }
