@@ -36,15 +36,22 @@ public class SetTimerActivity extends Activity {
     private static final int DEFAULT_HOURS = 1;
     private static final int DEFAULT_MINUTES = 0;
 
-    private TimerManager timerManager;
-    private SharedPreferences sharedPreferences;
     private NumberPicker hoursPicker;
     private NumberPicker minutesPicker;
+    private TimerManager timerManager;
+    private SharedPreferences sharedPreferences;
+    private CountdownNotifier countdownNotifier;
+    private PauseMusicNotifier pauseMusicNotifier;
 
 
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
-        onCreate(savedInstanceState, TimerManager.get(this), PreferenceManager.getDefaultSharedPreferences(this));
+        onCreate(
+                savedInstanceState,
+                TimerManager.get(this),
+                PreferenceManager.getDefaultSharedPreferences(this),
+                CountdownNotifier.get(this),
+                PauseMusicNotifier.get(this));
     }
 
     /**
@@ -53,8 +60,15 @@ public class SetTimerActivity extends Activity {
      * @param savedInstanceState The activity's previous state
      * @param timerManager The timer manager to use
      * @param sharedPreferences The shared preferences to use
+     * @param countdownNotifier The countdown notifier to use
+     * @param pauseMusicNotifier The pause music notifier to use
      */
-    protected void onCreate(Bundle savedInstanceState, TimerManager timerManager, SharedPreferences sharedPreferences) {
+    protected void onCreate(
+            Bundle savedInstanceState,
+            TimerManager timerManager,
+            SharedPreferences sharedPreferences,
+            CountdownNotifier countdownNotifier,
+            PauseMusicNotifier pauseMusicNotifier) {
 
         super.onCreate(savedInstanceState);
 
@@ -63,9 +77,6 @@ public class SetTimerActivity extends Activity {
         // Prevent the soft keyboard from appearing until explicitly launched by the user
         // Source: http://stackoverflow.com/a/2059394
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        this.timerManager = timerManager;
-        this.sharedPreferences = sharedPreferences;
 
         hoursPicker = (NumberPicker) findViewById(R.id.hours_picker);
         hoursPicker.setMinValue(MIN_HOURS);
@@ -76,6 +87,11 @@ public class SetTimerActivity extends Activity {
         minutesPicker.setMinValue(MIN_MINUTES);
         minutesPicker.setMaxValue(MAX_MINUTES);
         minutesPicker.setValue(sharedPreferences.getInt(MINUTES_KEY, DEFAULT_MINUTES));
+
+        this.timerManager = timerManager;
+        this.sharedPreferences = sharedPreferences;
+        this.countdownNotifier = countdownNotifier;
+        this.pauseMusicNotifier = pauseMusicNotifier;
     }
 
     /**
@@ -94,14 +110,18 @@ public class SetTimerActivity extends Activity {
         int hours = hoursPicker.getValue();
         int minutes = minutesPicker.getValue();
 
-        // The currently selected values should become the new defaults
+        // The currently selected hour and minute values should become the new defaults
         setDefaultTimerLength(hours, minutes);
+
+        // It is possible that a previous music paused notification is still active; remove it
+        pauseMusicNotifier.cancelNotification();
 
         timerManager.setTimer(hours, minutes);
 
+        countdownNotifier.postNotification(timerManager.getScheduledTime());
+
         Toast.makeText(this, R.string.timer_started, Toast.LENGTH_SHORT).show();
 
-        // Finish the activity
         setResult(RESULT_OK);
         finish();
     }
