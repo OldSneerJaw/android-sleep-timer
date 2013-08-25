@@ -51,9 +51,9 @@ public class CountdownNotifierTest extends AndroidMockingTestCase {
         Mockito.when(mockResources.getString(R.string.countdown_notification_title)).thenReturn(NOTIFICATION_TITLE);
         Mockito.when(mockResources.getString(R.string.countdown_notification_text)).thenReturn(NOTIFICATION_TEXT);
 
-        DateFormat countdownEndsDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG, Locale.ENGLISH);
+        DateFormat countdownTimeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
 
-        notifier = new CountdownNotifier(mockContext, mockNotificationManager, mockResources, countdownEndsDateFormat);
+        notifier = new CountdownNotifier(mockContext, mockNotificationManager, mockResources, countdownTimeFormat);
     }
 
     public void testGetInstance_EqualContextsReturnSameInstance() {

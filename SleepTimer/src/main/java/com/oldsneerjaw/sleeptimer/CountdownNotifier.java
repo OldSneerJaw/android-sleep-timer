@@ -37,7 +37,7 @@ public class CountdownNotifier {
     private final Context context;
     private final NotificationManager notificationManager;
     private final Resources resources;
-    private final DateFormat countdownEndDateFormat;
+    private final DateFormat countdownTimeFormat;
 
     /**
      * Constructs an instance of {@link CountdownNotifier}.
@@ -49,7 +49,7 @@ public class CountdownNotifier {
                 context,
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE),
                 context.getResources(),
-                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                DateFormat.getTimeInstance(DateFormat.SHORT)
         );
     }
 
@@ -60,18 +60,18 @@ public class CountdownNotifier {
      * @param context The context
      * @param notificationManager The system notification manager
      * @param resources The app's resources
-     * @param countdownEndDateFormat The date and time format to use for the countdown end date and time
+     * @param countdownTimeFormat The time format to use for the countdown
      */
     CountdownNotifier(
             Context context,
             NotificationManager notificationManager,
             Resources resources,
-            DateFormat countdownEndDateFormat) {
+            DateFormat countdownTimeFormat) {
 
         this.context = context.getApplicationContext();
         this.notificationManager = notificationManager;
         this.resources = resources;
-        this.countdownEndDateFormat = countdownEndDateFormat;
+        this.countdownTimeFormat = countdownTimeFormat;
     }
 
     /**
@@ -107,7 +107,7 @@ public class CountdownNotifier {
      * @return A {@link Notification}
      */
     private Notification getNotification(Date countdownEnds) {
-        String countdownEndsString = countdownEndDateFormat.format(countdownEnds);
+        String countdownEndsString = countdownTimeFormat.format(countdownEnds);
         String title = resources.getString(R.string.countdown_notification_title);
         String text = resources.getString(R.string.countdown_notification_text, countdownEndsString);
 
