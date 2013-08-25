@@ -21,7 +21,7 @@ Distributed under the MIT License: http://opensource.org/licenses/MIT
             android:id="@+id/cancel_timer_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="stopTimer"
+            android:onClick="stopCountdown"
             android:text="@string/cancel_timer_button_label" />
     </TableRow>
 
