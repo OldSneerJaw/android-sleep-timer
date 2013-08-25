@@ -71,8 +71,8 @@ public class PauseMusicNotifier {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentTitle(title)
                 .setContentText(text)
-                .setSmallIcon(R.drawable.ic_launcher)
                 .setTicker(title)
+                .setSmallIcon(R.drawable.ic_launcher)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(tapIntent)
                 .setAutoCancel(true);
@@ -90,7 +90,8 @@ public class PauseMusicNotifier {
     }
 
     /**
-     * Cancels and removes the music paused notification, in any, from the system status bar.
+     * Cancels and removes the music paused notification from the system status bar. If the notification is not present,
+     * this method has no effect.
      */
     public void cancelNotification() {
         notificationManager.cancel(NOTIFICATION_ID);
