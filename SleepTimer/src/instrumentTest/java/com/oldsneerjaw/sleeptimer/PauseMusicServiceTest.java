@@ -7,6 +7,8 @@ package com.oldsneerjaw.sleeptimer;
 
 import android.media.AudioManager;
 
+import com.oldsneerjaw.sleeptimer.test.AndroidMockingTestCase;
+
 import org.mockito.Mockito;
 
 /**

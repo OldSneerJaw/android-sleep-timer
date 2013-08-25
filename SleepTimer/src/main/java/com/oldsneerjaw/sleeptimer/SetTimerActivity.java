@@ -44,7 +44,7 @@ public class SetTimerActivity extends Activity {
 
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
-        onCreate(savedInstanceState, TimerManager.getInstance(this), PreferenceManager.getDefaultSharedPreferences(this));
+        onCreate(savedInstanceState, TimerManager.get(this), PreferenceManager.getDefaultSharedPreferences(this));
     }
 
     /**

@@ -18,7 +18,7 @@ public class PauseMusicReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        pauseMusic(context, TimerManager.getInstance(context));
+        pauseMusic(context, TimerManager.get(context), CountdownNotifier.get(context));
     }
 
     /**
@@ -27,12 +27,16 @@ public class PauseMusicReceiver extends BroadcastReceiver {
      * @param context The context in which the receiver is running
      *
      * @param timerManager The pause music timer manager
+     * @param countdownNotifier The countdown notifier
      */
-    void pauseMusic(Context context, TimerManager timerManager) {
+    void pauseMusic(Context context, TimerManager timerManager, CountdownNotifier countdownNotifier) {
+        timerManager.cancelTimer();
+        countdownNotifier.cancelNotification();
+
         // The service will be responsible for actually pausing playback and ensuring it remains paused until explicitly
         // restarted
+        Intent serviceIntent = new Intent(context, PauseMusicService.class);
+        context.stopService(serviceIntent);
         context.startService(new Intent(context, PauseMusicService.class));
-
-        timerManager.cancelTimer();
     }
 }

@@ -18,9 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Manages scheduling and cancelling the sleep timer.
  * <p>
- *     Call {@link TimerManager#getInstance(Context)} to instantiate.
+ *     Manages scheduling and cancelling the sleep timer.
+ * </p>
+ * <p>
+ *     Do not instantiate directly. Instead, call {@link #get(Context)} to retrieve an instance.
  * </p>
  *
  * @author Joel Andrews
@@ -50,7 +52,7 @@ public class TimerManager {
 
     /**
      * Constructs an instance of {@link TimerManager}. Should not be instantiated directly; call
-     * {@link TimerManager#getInstance(Context)} instead.
+     * {@link TimerManager#get(Context)} instead.
      *
      * @param context The context
      * @param sharedPreferences The shared preferences to use
@@ -69,7 +71,7 @@ public class TimerManager {
      *
      * @return A {@link TimerManager}
      */
-    public static TimerManager getInstance(Context context) {
+    public static TimerManager get(Context context) {
         if (context == null) {
             throw new NullPointerException("Argument context cannot be null");
         }
