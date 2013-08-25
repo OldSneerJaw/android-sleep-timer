@@ -12,6 +12,8 @@ import android.content.res.Resources;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
+import com.oldsneerjaw.sleeptimer.test.AndroidMockingTestCase;
+
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.mockito.Mockito;

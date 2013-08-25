@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.oldsneerjaw.sleeptimer.test.AndroidMockingTestCase;
+
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.mockito.Mockito;
