@@ -37,7 +37,7 @@ public class CountdownNotifier {
     private final Context context;
     private final NotificationManager notificationManager;
     private final Resources resources;
-    private final DateFormat countdownTimeFormat;
+    private final TimeFormatFactory countdownTimeFormatFactory;
 
     /**
      * Constructs an instance of {@link CountdownNotifier}.
@@ -49,7 +49,7 @@ public class CountdownNotifier {
                 context,
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE),
                 context.getResources(),
-                DateFormat.getTimeInstance(DateFormat.SHORT)
+                new TimeFormatFactory(context)
         );
     }
 
@@ -60,18 +60,18 @@ public class CountdownNotifier {
      * @param context The context
      * @param notificationManager The system notification manager
      * @param resources The app's resources
-     * @param countdownTimeFormat The time format to use for the countdown
+     * @param countdownTimeFormatFactory Produces the time format to use for the countdown
      */
     CountdownNotifier(
             Context context,
             NotificationManager notificationManager,
             Resources resources,
-            DateFormat countdownTimeFormat) {
+            TimeFormatFactory countdownTimeFormatFactory) {
 
         this.context = context.getApplicationContext();
         this.notificationManager = notificationManager;
         this.resources = resources;
-        this.countdownTimeFormat = countdownTimeFormat;
+        this.countdownTimeFormatFactory = countdownTimeFormatFactory;
     }
 
     /**
@@ -107,7 +107,8 @@ public class CountdownNotifier {
      * @return A {@link Notification}
      */
     private Notification getNotification(Date countdownEnds) {
-        String countdownEndsString = countdownTimeFormat.format(countdownEnds);
+        DateFormat timeFormat = countdownTimeFormatFactory.getTimeFormat();
+        String countdownEndsString = timeFormat.format(countdownEnds);
         String title = resources.getString(R.string.countdown_notification_title);
         String text = resources.getString(R.string.countdown_notification_text, countdownEndsString);
 
@@ -144,5 +145,32 @@ public class CountdownNotifier {
      */
     public void cancelNotification() {
         notificationManager.cancel(NOTIFICATION_ID);
+    }
+
+
+    /**
+     * Produces time formats according to the system's 12/24-hour clock preference.
+     */
+    public static class TimeFormatFactory {
+
+        private final Context context;
+
+        /**
+         * Constructs an instance of {@link TimeFormatFactory}.
+         *
+         * @param context The context
+         */
+        public TimeFormatFactory(Context context) {
+            this.context = context;
+        }
+
+        /**
+         * Returns a time format according to the system's current 12/24-hour clock preference.
+         *
+         * @return A {@link DateFormat}
+         */
+        public DateFormat getTimeFormat() {
+            return android.text.format.DateFormat.getTimeFormat(context);
+        }
     }
 }
